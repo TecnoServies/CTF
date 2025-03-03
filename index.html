@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TecnoservicesCTF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto py-10 text-center">
+        <h1 class="text-4xl font-bold mb-6">TecnoservicesCTF</h1>
+        <div id="challenges" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- تحديات سيتم إضافتها ديناميكيًا -->
+        </div>
+    </div>
+    
+    <!-- نافذة المعلومات -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+        <div class="bg-gray-800 p-6 rounded-lg w-96 text-center">
+            <h2 id="challengeTitle" class="text-2xl font-bold mb-4"></h2>
+            <p id="challengeDescription" class="mb-4"></p>
+			<button id="downloadFile" class="bg-blue-600 px-4 py-2 rounded mt-2 hidden">تحميل الملف</button>
+            <input id="flagInput" type="text" class="w-full p-2 mb-4 rounded bg-gray-700 text-white" placeholder="أدخل العلم هنا">
+            <button onclick="checkFlag()" class="bg-green-600 px-4 py-2 rounded">إرسال</button>
+            <button onclick="closeModal()" class="bg-red-600 px-4 py-2 rounded ml-2">إغلاق</button>
+            <p id="resultMessage" class="mt-4 font-bold"></p>
+        </div>
+    </div>
+    
+    <script>
+        const challenges = [
+    { id: 1, title: "التحدي الأول", description: "web hacking (easy)", flag: "flag{1234}", file: "hidden_binary.bin" },
+    { id: 2, title: "التحدي الثاني", description: "وصف التحدي الثاني", flag: "flag{abcd}", file: "files/challenge2.pdf" },
+	{ id: 2, title: "التحدي الثالث", description: "وصف التحدي الثاني", flag: "flag{abcd}", file: "files/challenge2.pdf" },
+	{ id: 2, title: "التحدي الثاني", description: "وصف التحدي الثاني", flag: "flag{abcd}", file: "files/challenge2.pdf" },
+];
+
+        
+        const challengesContainer = document.getElementById("challenges");
+        
+        challenges.forEach(challenge => {
+            const challengeCard = document.createElement("div");
+            challengeCard.className = "bg-gray-800 p-4 rounded-lg cursor-pointer hover:bg-gray-700";
+            challengeCard.innerHTML = `<h2 class="text-xl font-bold">${challenge.title}</h2>`;
+            challengeCard.onclick = () => openModal(challenge);
+            challengesContainer.appendChild(challengeCard);
+        });
+        
+        function openModal(challenge) {
+    document.getElementById("challengeTitle").innerText = challenge.title;
+    document.getElementById("challengeDescription").innerText = challenge.description;
+    document.getElementById("flagInput").value = "";
+    document.getElementById("resultMessage").innerText = "";
+    
+    const downloadBtn = document.getElementById("downloadFile");
+    if (challenge.file) {
+        downloadBtn.classList.remove("hidden");
+        downloadBtn.onclick = () => window.open(challenge.file, "_blank");
+    } else {
+        downloadBtn.classList.add("hidden");
+    }
+
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").dataset.flag = challenge.flag;
+}
+
+        
+        function closeModal() {
+            document.getElementById("modal").classList.add("hidden");
+        }
+        
+        function checkFlag() {
+            const inputFlag = document.getElementById("flagInput").value;
+            const correctFlag = document.getElementById("modal").dataset.flag;
+            const resultMessage = document.getElementById("resultMessage");
+            
+            if (inputFlag === correctFlag) {
+                resultMessage.innerText = "✔ تم الانتهاء من السؤال بنجاح!";
+                resultMessage.classList.add("text-green-500");
+            } else {
+                resultMessage.innerText = "❌ العلم غير صحيح، حاول مرة أخرى";
+                resultMessage.classList.add("text-red-500");
+            }
+        }
+    </script>
+</body>
+</html>
